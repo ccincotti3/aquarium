@@ -1,10 +1,12 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
+import { RectAreaLightHelper } from '../node_modules/three/examples/jsm/helpers/RectAreaLightHelper.js';
 import Fish from './models/fish.js';
 import Shark from './models/shark.js';
 
 class Aquarium {
     constructor() {
         this.container = document.createElement('div')
+        this.container.classList.add('canvas-container');
         this.container.style.height = "100%";
         document.body.appendChild(this.container);
 
@@ -21,25 +23,53 @@ class Aquarium {
         const height = window.innerHeight;
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( 0x65a2b4 );
+        this.scene.fog = new THREE.FogExp2(0x1c3c4a, 0.05);
+        // this.scene.fog = new THREE.Fog(0x1c3c4a, 0.1, 2000 )
+        // this.scene.background = new THREE.Color( 0x65a2b4 );
 
-        this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
         this.camera.position.set(0, 0, 20);
         this.camera.lookAt(0, 0, 0);
         window.addEventListener( 'resize', this.onWindowResize );
 
-        const ambient = new THREE.AmbientLight( 0x707070, 5); // soft white light
+        const ambient = new THREE.AmbientLight( 0x707070, 4); // soft white light
+        this.scene.add( ambient )
+
+        //middle light
+        const centerLight = new THREE.SpotLight(0xb7f9ff, 1);
+        this.scene.add(centerLight);
+        centerLight.position.set(2500, 300, 2000);
+        centerLight.penumbra = 1;
+        centerLight.decay = 5;
+
+        // point lights
+        const pointLight = new THREE.PointLight(0xe07bff, 1.5);
+        pointLight.position.z = 200;
+        this.scene.add(pointLight);
+
+        const  pointLight2 = new THREE.PointLight(0xff4e00, 1.2);
+        pointLight2.position.z = 200;
+        this.scene.add(pointLight2);
+
+        var recWidth = 10;
+        var recHeight = 10;
+        var intensity = 20;
+        var rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  recWidth, recHeight );
+        rectLight.position.set( 0, 10, 0 );
+        rectLight.lookAt( 0, 0, 0 );
+        this.scene.add( rectLight )
 
         // Add Renderer
-        this.renderer = new THREE.WebGLRenderer({antialias: true});
+        this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+        this.renderer.setClearColor(0x1c3c4a, 0.3)
         this.renderer.setSize(width, height)
         this.container.appendChild(this.renderer.domElement)
-
-        this.scene.add( ambient )
 
         if(this.debug){
             const axesHelper = new THREE.AxesHelper( 20 );
             const camerahelper = new THREE.CameraHelper( this.camera );
+            const rectLightHelper = new RectAreaLightHelper( rectLight );
+            rectLight.add( rectLightHelper );
             this.scene.add( camerahelper );
             this.scene.add( axesHelper );
         }
@@ -52,11 +82,17 @@ class Aquarium {
         var delta = this.clock.getDelta();
 
         if ( this.mixers.length ) { 
-                this.mixers.forEach(m => m.update(delta))
+            this.mixers.forEach(m => m.update(delta))
         };
 
         if ( this.fisheys.length ) {
             this.fisheys.forEach(f => f.move())
+        }
+        if(this.pGroup){
+            if(this.pGroup.position.y > 350) {
+                this.pGroup.position.y = -100
+            }
+            this.pGroup.position.y += .1
         }
 
         this.renderer.render(this.scene, this.camera)
@@ -77,6 +113,12 @@ class Aquarium {
                 const axesHelper = new THREE.AxesHelper( 2 );
                 gltf.scene.add(axesHelper)
             }
+
+            gltf.scene.traverse((o) => {
+                if (o.isMesh) { 
+                    o.castShadow = true
+                }
+            });
             object.mesh = gltf.scene
             this.fisheys.push(object)
             this.scene.add( object.mesh );
@@ -87,6 +129,34 @@ class Aquarium {
         new Fish({x: 1, y: 3, z: 0}).load(loadCallback, errorCallback);
         new Fish({x: 4, y: 1, z: 0}).load(loadCallback, errorCallback);
         new Shark({x: -2, y: 1, z: 0}).load(loadCallback, errorCallback);
+
+        // Bubbles
+        const pGeometry = new THREE.Geometry();
+        const pGroup = new THREE.Object3D();
+        this.pGroup = pGroup
+        this.scene.add(pGroup)
+
+        const tL = new THREE.TextureLoader()
+        const sprite = tL.load("assets/sprite.png");
+        for (let i = 0; i < 1400; i++) {
+            var vertex = new THREE.Vector3();
+            vertex.x = 4000 * Math.random() - 2000;
+            vertex.y = -500 + Math.random() * 700;
+            vertex.z = 1200 * Math.random() - 500;
+            pGeometry.vertices.push(vertex);
+        }
+        const material = new THREE.PointsMaterial({
+            size: 10,
+            map: sprite,
+            transparent: true,
+            opacity: 1.0,
+            blending: THREE.AdditiveBlending,
+            alphaTest: 0.5
+        });
+
+        const particles = new THREE.Points(pGeometry, material);
+        particles.sortParticles = true;
+        pGroup.add(particles);
     }
 
     onWindowResize = () => {
