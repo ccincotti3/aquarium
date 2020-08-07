@@ -14,6 +14,7 @@ class Aquarium {
         this.clock = new THREE.Clock();
         this.mixers = [] // to hold animation mixers
         this.fisheys = []
+        this.selectedFish;
         // this.debug = true
 
         this.init()
@@ -59,6 +60,8 @@ class Aquarium {
         rectLight.lookAt( 0, 0, 0 );
         this.scene.add( rectLight )
 
+
+
         // Add Renderer
         this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
         this.renderer.setClearColor(0x1c3c4a, 0.3)
@@ -75,16 +78,15 @@ class Aquarium {
         }
 
         this.loadModels();
+        this.loadInteractiveStuff();
         this.draw();
     }
     draw = () => {
         requestAnimationFrame( () => this.draw() )
-        var delta = this.clock.getDelta();
-
+        const delta = this.clock.getDelta();
         if ( this.mixers.length ) { 
             this.mixers.forEach(m => m.update(delta))
         };
-
         if ( this.fisheys.length ) {
             this.fisheys.forEach(f => f.move())
         }
@@ -93,6 +95,10 @@ class Aquarium {
                 this.pGroup.position.y = -100
             }
             this.pGroup.position.y += .1
+        }
+
+        if(this.selectedFish) {
+            this.selectedFish.mesh.children[this.selectedFish.mesh.children.length - 1].visible = true // find box
         }
 
         this.renderer.render(this.scene, this.camera)
@@ -108,6 +114,8 @@ class Aquarium {
             // Append to mixers
             this.mixers.push(mixer)
 
+
+
             gltf.scene.position.set(object.position.x, object.position.y, object.position.z)
             if (this.debug) {
                 const axesHelper = new THREE.AxesHelper( 2 );
@@ -117,9 +125,16 @@ class Aquarium {
             gltf.scene.traverse((o) => {
                 if (o.isMesh) { 
                     o.castShadow = true
+                    o.name = object.name
                 }
             });
             object.mesh = gltf.scene
+
+            const box = new THREE.BoxHelper( gltf.scene, 0xffff00 );
+            box.visible = false
+
+            object.mesh.add(box)
+
             this.fisheys.push(object)
             this.scene.add( object.mesh );
         }
@@ -165,6 +180,32 @@ class Aquarium {
 
         this.renderer.setSize( window.innerWidth, window.innerHeight );
     }
+
+    onMouseMove = ( event ) => {
+            // calculate mouse position in normalized device coordinates
+            event.preventDefault();
+
+            // (-1 to +1) for both components
+            this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            this.raycaster.setFromCamera( this.mouse, this.camera );
+            const meshes = this.fisheys.map(m => m.mesh)
+            const intersects = this.raycaster.intersectObjects( meshes, true );
+            if(intersects.length) {
+                this.selectedFish = this.fisheys.find(f => f.name === intersects[0].object.name);
+            } else {
+                this.selectedFish = false;
+            }
+    }
+
+    loadInteractiveStuff = () => {
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+       
+        window.addEventListener( 'mousemove', this.onMouseMove, false );
+    }
+
 }
 
 window.Aquarium = Aquarium
