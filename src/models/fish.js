@@ -1,5 +1,4 @@
 import Object from "./object.js"
-import * as THREE from '../../node_modules/three/build/three.module.js';
 
 export default class Fish extends Object {
     constructor(pos) {
@@ -16,49 +15,49 @@ export default class Fish extends Object {
             y: 0,
             z: 0,
         }
-        this.velocity = 0.01
-        this.rotationTurnFactor = 0.008
+        this.velocity = 0.02
+        this.rotationTurnFactor = 0.01
         this.loaded = false
-        this.rotationThreshold = 0.1
     }
 
 
-    move(cam) {
-        if (!this.loaded) {
-            this.loaded = true;
-            return null;
-        }
-        let vector = new THREE.Vector3()
-        this.mesh.getWorldPosition(vector);
-        let rotationY = 0
-        let rotationZ = 0
+    // move() {
+    //     if (!this.loaded) {
+    //         this.loaded = true;
+    //         return null;
+    //     }
+    //     let vector = new THREE.Vector3()
+    //     this.mesh.getWorldPosition(vector);
+    //     let rotationY = 0
+    //     let rotationZ = 0
 
-        console.log(vector)
+    //     const direction = new THREE.Vector3( -1, 0, 0 ).applyQuaternion( this.mesh.quaternion );
+    //     const xDirectionFactor = direction.x * vector.x > 0 ? 1 : 0.5;
+    //     const yDirectionFactor = direction.y * vector.y > 0 ? 1 : 0.5;
 
-        const rotationRandom = Math.random()
-        if (this.rotationThreshold > rotationRandom) {
-            const influencingVector = Math.abs(vector.x) > Math.abs(vector.z) ? vector.x : vector.z
-            rotationY = influencingVector * this.rotationTurnFactor
-            rotationZ = vector.y * this.rotationTurnFactor
-        }
+    //     const rotationRandom = Math.random()
+    //     if (this.rotationThreshold > rotationRandom) {
+    //         const influencingVector = Math.abs(vector.x) > Math.abs(vector.z) ? vector.x : vector.z
+    //             rotationY = influencingVector * this.rotationTurnFactor * xDirectionFactor
+    //             rotationZ = vector.y * this.rotationTurnFactor * yDirectionFactor
+    //     }
+
+    //     this.mesh.rotation.y += rotationY // Turn around
+    //     this.mesh.rotation.z += rotationZ // Turn around
+
+    //     if (this.mesh.rotation.z > Math.PI / 2) {
+    //         this.mesh.rotation.z = Math.PI / 2
+    //     }
+
+    //     if (this.mesh.rotation.z < -Math.PI / 2)  {
+    //         this.mesh.rotation.z = -Math.PI / 2
+    //     }
 
 
-        this.mesh.rotation.y += rotationY // Turn around
-        this.mesh.rotation.z += rotationZ // Turn around
-
-        if (this.mesh.rotation.z > Math.PI / 2) {
-            this.mesh.rotation.z = Math.PI / 2
-        }
-
-        if (this.mesh.rotation.z < -Math.PI / 2)  {
-            this.mesh.rotation.z = -Math.PI / 2
-        }
-
-
-        this.mesh.translateX(this.velocity * this.direction.x)
-        // console.log(this.mesh.position)
-        // console.log(vector)
-        // console.log(worldCoords)
-        // console.log(this.mesh.getWorldPosition())
-    }
+    //     this.mesh.translateX(this.velocity * this.direction.x)
+    //     // console.log(this.mesh.position)
+    //     // console.log(vector)
+    //     // console.log(worldCoords)
+    //     // console.log(this.mesh.getWorldPosition())
+    // }
 }

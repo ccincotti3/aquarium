@@ -1,5 +1,6 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
 import Fish from './models/fish.js';
+import Shark from './models/shark.js';
 
 class Aquarium {
     constructor() {
@@ -11,7 +12,7 @@ class Aquarium {
         this.clock = new THREE.Clock();
         this.mixers = [] // to hold animation mixers
         this.fisheys = []
-        this.debug = true
+        // this.debug = true
 
         this.init()
     }
@@ -20,12 +21,14 @@ class Aquarium {
         const height = window.innerHeight;
 
         this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color( 0x65a2b4 );
+
         this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
         this.camera.position.set(0, 0, 20);
         this.camera.lookAt(0, 0, 0);
         window.addEventListener( 'resize', this.onWindowResize );
 
-        const ambient = new THREE.AmbientLight( 0x707070 ); // soft white light
+        const ambient = new THREE.AmbientLight( 0x707070, 5); // soft white light
 
         // Add Renderer
         this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -53,7 +56,7 @@ class Aquarium {
         };
 
         if ( this.fisheys.length ) {
-            this.fisheys.forEach(f => f.move(this.camera))
+            this.fisheys.forEach(f => f.move())
         }
 
         this.renderer.render(this.scene, this.camera)
@@ -70,6 +73,10 @@ class Aquarium {
             this.mixers.push(mixer)
 
             gltf.scene.position.set(object.position.x, object.position.y, object.position.z)
+            if (this.debug) {
+                const axesHelper = new THREE.AxesHelper( 2 );
+                gltf.scene.add(axesHelper)
+            }
             object.mesh = gltf.scene
             this.fisheys.push(object)
             this.scene.add( object.mesh );
@@ -79,6 +86,7 @@ class Aquarium {
 
         new Fish({x: 1, y: 3, z: 0}).load(loadCallback, errorCallback);
         new Fish({x: 4, y: 1, z: 0}).load(loadCallback, errorCallback);
+        new Shark({x: -2, y: 1, z: 0}).load(loadCallback, errorCallback);
     }
 
     onWindowResize = () => {
