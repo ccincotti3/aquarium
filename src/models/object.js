@@ -6,7 +6,7 @@ const loader = new GLTFLoader().setPath('../../models/')
 export default class Object {
     constructor() {
         this.rotationThreshold = 0.04
-        this.rotationTurnFactor = 0.001
+        this.rotationTurnFactor = 0.002
         this.loader = loader
         this.modelName = undefined
         this.position = {

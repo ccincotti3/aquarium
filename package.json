@@ -4,7 +4,6 @@
   },
   "dependencies": {
     "http-server": "^0.12.3",
-    "postprocessing": "^6.16.0",
     "three": "^0.119.1"
   }
 }
