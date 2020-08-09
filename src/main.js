@@ -4,6 +4,7 @@ import Fish from './models/fish.js';
 import Shark from './models/shark.js';
 import { lightShader, vertexShader } from "./shaders.js"
 
+
 class Aquarium {
     constructor() {
         this.container = document.createElement('div')
@@ -111,6 +112,8 @@ class Aquarium {
             this.pGroup.position.y += .1
         }
 
+        this.handleSelectedFish()
+
         this.renderer.render(this.scene, this.camera)
     }
     loadModels() {
@@ -123,8 +126,6 @@ class Aquarium {
 
             // Append to mixers
             this.mixers.push(mixer)
-
-
 
             const box = new THREE.BoxHelper( gltf.scene, 0xffff00 );
 
@@ -148,14 +149,13 @@ class Aquarium {
 
             this.fisheys.push(object)
             this.scene.add( object.mesh );
-            console.log(this.fisheys)
         }
         
         const errorCallback = (e) => console.log(e)
 
-        new Fish({x: 1, y: 3, z: 0}).load(loadCallback, errorCallback);
-        new Fish({x: 4, y: 1, z: 0}).load(loadCallback, errorCallback);
-        new Shark({x: -2, y: 1, z: 0}).load(loadCallback, errorCallback);
+        new Fish({x: 1, y: 3, z: 0}, "Fish 1").load(loadCallback, errorCallback);
+        new Fish({x: 4, y: 1, z: 0}, "Fish 2").load(loadCallback, errorCallback);
+        new Shark({x: -2, y: 1, z: 0}, "Shark").load(loadCallback, errorCallback);
 
         // Bubbles
         const pGeometry = new THREE.Geometry();
@@ -206,17 +206,19 @@ class Aquarium {
             const intersects = this.raycaster.intersectObjects( meshes, true );
             if(intersects.length) {
                 const fish = this.fisheys.find(f => f.name === intersects[0].object.name);
-                if(fish) {
-                    fish.boxHelper.visible = true
-                    return this.selectedFish = fish
-                } 
+                return this.selectedFish = fish
             }
-            try {
-                this.selectedFish.boxHelper.visible = false;
-                this.selectedFish = false;
-            } catch {
-                this.selectedFish = false;
-            }
+            return this.selectedFish = null
+    }
+
+    handleSelectedFish() {
+        const domEl = document.getElementById("selected")
+        if(!this.selectedFish) {
+            domEl.innerHTML = ''
+            return this.fisheys.forEach(f => f.boxHelper.visible = false)
+        }
+        domEl.innerHTML = this.selectedFish.name
+        this.selectedFish.boxHelper.visible = true
     }
 
     loadInteractiveStuff = () => {

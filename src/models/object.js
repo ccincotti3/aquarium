@@ -14,6 +14,11 @@ export default class Object {
             y: 0,
             z: 0,
         }
+        this.direction = { // 1 for positive, 0 for negative
+            x: -1,
+            y: 0,
+            z: 0,
+        }
     }
 
     get boxHelper() {

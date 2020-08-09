@@ -10,12 +10,23 @@
             background-blend-mode:soft-light;
 
         }
+        .stats {
+            position: absolute;
+            background-color: rgba(0,0,0,0.6);
+            padding: 1rem;
+            width: 200px;
+            color: white;
+            font-family: monospace;
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
+    <div class="stats">
+        <p>Selected: <span id="selected"></span></p>
+    </div>
     <script type="module" src="http://localhost:8080/src/main.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {

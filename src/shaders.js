@@ -1,3 +1,4 @@
+// Need this for the quad trick to make full screen
 export const vertexShader = `
   varying vec2 vUv;
 
@@ -6,6 +7,8 @@ export const vertexShader = `
     gl_Position = vec4(position, 1.0);
   }
 `
+
+// based off of https://www.shadertoy.com/view/MdSyDz
 export const lightShader = `
 uniform vec3 iResolution;
 uniform float iTime;
