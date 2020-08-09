@@ -2,6 +2,7 @@ import * as THREE from '../node_modules/three/build/three.module.js';
 import { RectAreaLightHelper } from '../node_modules/three/examples/jsm/helpers/RectAreaLightHelper.js';
 import Fish from './models/fish.js';
 import Shark from './models/shark.js';
+import { lightShader, vertexShader } from "./shaders.js"
 
 class Aquarium {
     constructor() {
@@ -15,6 +16,13 @@ class Aquarium {
         this.mixers = [] // to hold animation mixers
         this.fisheys = []
         this.selectedFish;
+
+        //shader uniforms
+        this.uniforms = {
+            iTime: { value: 0 },
+            iResolution:  { value: new THREE.Vector3() },
+        }
+
         // this.debug = true
 
         this.init()
@@ -43,14 +51,6 @@ class Aquarium {
         centerLight.penumbra = 1;
         centerLight.decay = 5;
 
-        // point lights
-        const pointLight = new THREE.PointLight(0xe07bff, 1.5);
-        pointLight.position.z = 200;
-        this.scene.add(pointLight);
-
-        const  pointLight2 = new THREE.PointLight(0xff4e00, 1.2);
-        pointLight2.position.z = 200;
-        this.scene.add(pointLight2);
 
         var recWidth = 10;
         var recHeight = 10;
@@ -60,7 +60,19 @@ class Aquarium {
         rectLight.lookAt( 0, 0, 0 );
         this.scene.add( rectLight )
 
+        //Shader over scene - light shader
+        const lightShaderMaterial = new THREE.ShaderMaterial({
+            fragmentShader: lightShader,
+            vertexShader: vertexShader,
+            uniforms: this.uniforms,
+            depthWrite: false,
+            depthTest: false,
+            transparent: true,
+            // alphaTest: 0.5,
+        })
 
+        const quad = new THREE.Mesh( new THREE.PlaneBufferGeometry( 2, 2 ), lightShaderMaterial );
+        this.scene.add(quad);
 
         // Add Renderer
         this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
@@ -79,11 +91,13 @@ class Aquarium {
 
         this.loadModels();
         this.loadInteractiveStuff();
-        this.draw();
+        requestAnimationFrame(this.draw);
     }
     draw = () => {
         requestAnimationFrame( () => this.draw() )
         const delta = this.clock.getDelta();
+        this.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight, 1);
+        this.uniforms.iTime.value += delta;
         if ( this.mixers.length ) { 
             this.mixers.forEach(m => m.update(delta))
         };
@@ -95,10 +109,6 @@ class Aquarium {
                 this.pGroup.position.y = -100
             }
             this.pGroup.position.y += .1
-        }
-
-        if(this.selectedFish) {
-            this.selectedFish.mesh.children[this.selectedFish.mesh.children.length - 1].visible = true // find box
         }
 
         this.renderer.render(this.scene, this.camera)
@@ -116,6 +126,8 @@ class Aquarium {
 
 
 
+            const box = new THREE.BoxHelper( gltf.scene, 0xffff00 );
+
             gltf.scene.position.set(object.position.x, object.position.y, object.position.z)
             if (this.debug) {
                 const axesHelper = new THREE.AxesHelper( 2 );
@@ -130,13 +142,13 @@ class Aquarium {
             });
             object.mesh = gltf.scene
 
-            const box = new THREE.BoxHelper( gltf.scene, 0xffff00 );
-            box.visible = false
-
-            object.mesh.add(box)
+            box.name = object.name
+            box.visible = false;
+            object.mesh.add( box );
 
             this.fisheys.push(object)
             this.scene.add( object.mesh );
+            console.log(this.fisheys)
         }
         
         const errorCallback = (e) => console.log(e)
@@ -193,8 +205,16 @@ class Aquarium {
             const meshes = this.fisheys.map(m => m.mesh)
             const intersects = this.raycaster.intersectObjects( meshes, true );
             if(intersects.length) {
-                this.selectedFish = this.fisheys.find(f => f.name === intersects[0].object.name);
-            } else {
+                const fish = this.fisheys.find(f => f.name === intersects[0].object.name);
+                if(fish) {
+                    fish.boxHelper.visible = true
+                    return this.selectedFish = fish
+                } 
+            }
+            try {
+                this.selectedFish.boxHelper.visible = false;
+                this.selectedFish = false;
+            } catch {
                 this.selectedFish = false;
             }
     }
@@ -205,7 +225,6 @@ class Aquarium {
        
         window.addEventListener( 'mousemove', this.onMouseMove, false );
     }
-
 }
 
 window.Aquarium = Aquarium

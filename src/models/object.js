@@ -16,6 +16,12 @@ export default class Object {
         }
     }
 
+    get boxHelper() {
+        return this.mesh.children.find(c => {
+            return c.type === "BoxHelper"
+        })
+    }
+
     move() {
             if (!this.loaded) {
                 this.loaded = true;
