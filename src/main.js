@@ -45,19 +45,19 @@ class Aquarium {
         const ambient = new THREE.AmbientLight( 0x707070, 4); // soft white light
         this.scene.add( ambient )
 
-        //middle light
-        const centerLight = new THREE.SpotLight(0xb7f9ff, 1);
-        this.scene.add(centerLight);
-        centerLight.position.set(2500, 300, 2000);
-        centerLight.penumbra = 1;
-        centerLight.decay = 5;
+        // //middle light
+        // const centerLight = new THREE.SpotLight(0xb7f9ff, 1);
+        // this.scene.add(centerLight);
+        // centerLight.position.set(2500, 300, 2000);
+        // centerLight.penumbra = 1;
+        // centerLight.decay = 5;
 
 
-        var recWidth = 10;
-        var recHeight = 10;
-        var intensity = 20;
+        var recWidth = 30;
+        var recHeight = 30;
+        var intensity = 10;
         var rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  recWidth, recHeight );
-        rectLight.position.set( 0, 10, 0 );
+        rectLight.position.set( 0, 20, 0 );
         rectLight.lookAt( 0, 0, 0 );
         this.scene.add( rectLight )
 
@@ -153,9 +153,12 @@ class Aquarium {
         
         const errorCallback = (e) => console.log(e)
 
-        new Fish({x: 1, y: 3, z: 0}, "Fish 1").load(loadCallback, errorCallback);
-        new Fish({x: 4, y: 1, z: 0}, "Fish 2").load(loadCallback, errorCallback);
-        new Shark({x: -2, y: 1, z: 0}, "Shark").load(loadCallback, errorCallback);
+        new Fish({x: -1, y: 3, z: 0}, "Fish 1").load(loadCallback, errorCallback);
+        new Fish({x: -3, y: -4, z: 0}, "Fish 2").load(loadCallback, errorCallback);
+        new Fish({x: 3, y: -8, z: 0}, "Fish 3").load(loadCallback, errorCallback);
+        new Fish({x: 8, y: -4, z: 0}, "Fish 4").load(loadCallback, errorCallback);
+        new Fish({x: 0, y: 6, z: 0}, "Fish 5").load(loadCallback, errorCallback);
+        new Shark({x: 2, y: 1, z: 0}, "Shark").load(loadCallback, errorCallback);
 
         // Bubbles
         const pGeometry = new THREE.Geometry();
