@@ -2,6 +2,7 @@ import * as THREE from '../node_modules/three/build/three.module.js';
 import { RectAreaLightHelper } from '../node_modules/three/examples/jsm/helpers/RectAreaLightHelper.js';
 import Fish from './models/fish.js';
 import Shark from './models/shark.js';
+import Stingray from './models/stingray.js';
 import { lightShader, vertexShader } from "./shaders.js"
 
 
@@ -159,6 +160,7 @@ class Aquarium {
         new Fish({x: 8, y: -4, z: 0}, "Fish 4").load(loadCallback, errorCallback);
         new Fish({x: 0, y: 6, z: 0}, "Fish 5").load(loadCallback, errorCallback);
         new Shark({x: 2, y: 1, z: 0}, "Shark").load(loadCallback, errorCallback);
+        new Stingray({x: -2, y: 1, z: 0}, "Stingray").load(loadCallback, errorCallback);
 
         // Bubbles
         const pGeometry = new THREE.Geometry();
