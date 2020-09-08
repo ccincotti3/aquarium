@@ -1,17 +1,16 @@
 import Object from "./object.js"
 
-export default class Fish extends Object {
+export default class Stingray extends Object {
     constructor(pos, name) {
         super()
-        this.modelName = 'fish.glb'
-        this.name = name || 'Fish'
+        this.modelName = 'marlin.glb'
+        this.name = name || 'Marlin'
         this.position = {
             x: pos.x,
             y: pos.y,
             z: pos.z
         }
-        this.velocity = 0.005
-        this.rotationTurnFactor = 0.01
+        this.velocity = 0.01
         this.loaded = false
     }
 }

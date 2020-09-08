@@ -10,7 +10,12 @@ export default class Shark extends Object {
             y: pos.y,
             z: pos.z
         }
-        this.velocity = 0.01
+        this.velocity = .0115
         this.loaded = false
+        this.direction = { // 1 for positive, 0 for negative
+            x: 0,
+            y: 0,
+            z: 1,
+        }
     }
 }
