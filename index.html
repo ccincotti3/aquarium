@@ -30,7 +30,21 @@
     <script type="module" src="http://localhost:8080/src/main.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const app = new Aquarium();
+            const nodes = [
+                {
+                    name: "Fish 1",
+                    type: "Goldfish",
+                    position: [0, 0, 0]
+                },
+                {
+                    name: "Shark",
+                    type: "Shark",
+                    position: [2, 2, 0]
+                }
+            ]
+            const app = new Aquarium({
+                nodes
+            });
             window.app= app;
         })
     </script>

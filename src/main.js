@@ -8,12 +8,11 @@ import { lightShader, vertexShader } from "./shaders.js"
 
 
 class Aquarium {
-    constructor() {
+    constructor(props) {
         this.container = document.createElement('div')
         this.container.classList.add('canvas-container');
         this.container.style.height = "100%";
         document.body.appendChild(this.container);
-
 
         this.clock = new THREE.Clock();
         this.mixers = [] // to hold animation mixers
@@ -26,7 +25,8 @@ class Aquarium {
             iResolution:  { value: new THREE.Vector3() },
         }
 
-        // this.debug = true
+        this.debug = props.debug
+        this.nodes = props.nodes
 
         this.init()
     }
@@ -36,8 +36,6 @@ class Aquarium {
 
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x1c3c4a, 0.05);
-        // this.scene.fog = new THREE.Fog(0x1c3c4a, 0.1, 2000 )
-        // this.scene.background = new THREE.Color( 0x65a2b4 );
 
         this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000);
         this.camera.position.set(0, 0, 20);
@@ -46,14 +44,6 @@ class Aquarium {
 
         const ambient = new THREE.AmbientLight( 0x707070, 7); // soft white light
         this.scene.add( ambient )
-
-        // //middle light
-        // const centerLight = new THREE.SpotLight(0xb7f9ff, 0.6);
-        // this.scene.add(centerLight);
-        // centerLight.position.set(2500, 300, 2000);
-        // centerLight.penumbra = 1;
-        // centerLight.decay = 5;
-
 
         var recWidth = 30;
         var recHeight = 30;
@@ -86,10 +76,10 @@ class Aquarium {
         if(this.debug){
             const axesHelper = new THREE.AxesHelper( 20 );
             const camerahelper = new THREE.CameraHelper( this.camera );
-            // const rectLightHelper = new RectAreaLightHelper( rectLight );
-            // rectLight.add( rectLightHelper );
-            // this.scene.add( camerahelper );
-            // this.scene.add( axesHelper );
+            const rectLightHelper = new RectAreaLightHelper( rectLight );
+            rectLight.add( rectLightHelper );
+            this.scene.add( camerahelper );
+            this.scene.add( axesHelper );
         }
 
         this.loadModels();
@@ -155,14 +145,34 @@ class Aquarium {
         
         const errorCallback = (e) => console.log(e)
 
-        new Fish({x: -1, y: 3, z: 0}, "Fish 1").load(loadCallback, errorCallback);
-        new Fish({x: -3, y: -4, z: 0}, "Fish 2").load(loadCallback, errorCallback);
-        new Fish({x: 3, y: -8, z: 0}, "Fish 3").load(loadCallback, errorCallback);
-        new Fish({x: 8, y: -4, z: 0}, "Fish 4").load(loadCallback, errorCallback);
-        new Fish({x: 0, y: 0, z: 0}, "Fish 5").load(loadCallback, errorCallback);
-        new Shark({x: 2, y: 1, z: 0}, "Shark").load(loadCallback, errorCallback);
-        new Stingray({x: -2, y: 1, z: 0}, "Stingray").load(loadCallback, errorCallback);
-        new Marlin({x: -2, y: 1, z: -5}, "Marlin").load(loadCallback, errorCallback);
+        this.nodes.forEach(n => {
+            switch (n.type) {
+                case "Goldfish":
+                    new Fish({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    break;
+                case "Shark":
+                    new Shark({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    break;
+                case "Stingray":
+                    new Stingray({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    break;
+                case "Marlin":
+                    new Marlin({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    break;
+                default:
+                    break;
+            }
+        })
+
+        if (this.debug) {
+            new Fish({x: -3, y: -4, z: 0}, "Fish 2").load(loadCallback, errorCallback);
+            new Fish({x: 3, y: -8, z: 0}, "Fish 3").load(loadCallback, errorCallback);
+            new Fish({x: 8, y: -4, z: 0}, "Fish 4").load(loadCallback, errorCallback);
+            new Fish({x: 0, y: 0, z: 0}, "Fish 5").load(loadCallback, errorCallback);
+            new Shark({x: 2, y: 1, z: 0}, "Shark").load(loadCallback, errorCallback);
+            new Stingray({x: -2, y: 1, z: 0}, "Stingray").load(loadCallback, errorCallback);
+            new Marlin({x: -2, y: 1, z: -5}, "Marlin").load(loadCallback, errorCallback);
+        }
 
         // Bubbles
         const pGeometry = new THREE.Geometry();
@@ -224,7 +234,7 @@ class Aquarium {
             domEl.innerHTML = ''
             return this.fisheys.forEach(f => f.boxHelper.visible = false)
         }
-        domEl.innerHTML = this.selectedFish.name + "\n" + JSON.stringify(this.selectedFish.mesh.rotation)
+        domEl.innerHTML = this.selectedFish.name 
 
         this.selectedFish.boxHelper.visible = true
     }
