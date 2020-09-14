@@ -1,11 +1,10 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
-import { RectAreaLightHelper } from '../node_modules/three/examples/jsm/helpers/RectAreaLightHelper.js';
+import * as THREE from 'three/build/three.module';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper';
 import Marlin from './models/marlin.js';
 import Fish from './models/fish.js';
 import Shark from './models/shark.js';
 import Stingray from './models/stingray.js';
 import { lightShader, vertexShader } from "./shaders.js"
-
 
 class Aquarium {
     constructor(props) {
@@ -84,9 +83,9 @@ class Aquarium {
 
         this.loadModels();
         this.loadInteractiveStuff();
-        requestAnimationFrame(this.draw);
+        requestAnimationFrame(() => this.draw());
     }
-    draw = () => {
+    draw() {
         requestAnimationFrame( () => this.draw() )
         const delta = this.clock.getDelta();
         this.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight, 1);
@@ -148,17 +147,13 @@ class Aquarium {
         this.nodes.forEach(n => {
             switch (n.type) {
                 case "Goldfish":
-                    new Fish({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
-                    break;
+                    return new Fish({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
                 case "Shark":
-                    new Shark({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
-                    break;
+                    return new Shark({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
                 case "Stingray":
-                    new Stingray({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
-                    break;
+                    return new Stingray({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
                 case "Marlin":
-                    new Marlin({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
-                    break;
+                    return new Marlin({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
                 default:
                     break;
             }
@@ -181,7 +176,7 @@ class Aquarium {
         this.scene.add(pGroup)
 
         const tL = new THREE.TextureLoader()
-        const sprite = tL.load("assets/sprite.png");
+        const sprite = tL.load("static/assets/sprite.png");
         for (let i = 0; i < 1400; i++) {
             var vertex = new THREE.Vector3();
             vertex.x = 4000 * Math.random() - 2000;
@@ -248,3 +243,4 @@ class Aquarium {
 }
 
 window.Aquarium = Aquarium
+export default Aquarium

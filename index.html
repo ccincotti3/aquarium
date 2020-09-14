@@ -5,7 +5,7 @@
         body { margin: 0;}
         canvas { display: block; }
         .canvas-container {
-            background: linear-gradient(0deg, rgba(255, 0, 150, 0.7), rgba(255, 0, 150, 0.7), rgba(255,255,255, 1)), url(assets/background.jpg) no-repeat center center;
+            background: linear-gradient(0deg, rgba(255, 0, 150, 0.7), rgba(255, 0, 150, 0.7), rgba(255,255,255, 1)), url(static/assets/background.jpg) no-repeat center center;
             background-size: cover;
             background-blend-mode:soft-light;
 
@@ -27,7 +27,7 @@
     <div class="stats">
         <p>Selected: <span id="selected"></span></p>
     </div>
-    <script type="module" src="http://localhost:8080/src/main.js"></script>
+    <script type="module" src="./src/index.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const nodes = [
@@ -40,12 +40,22 @@
                     name: "Shark",
                     type: "Shark",
                     position: [2, 2, 0]
+                },
+                {
+                    name: "Shark",
+                    type: "Marlin",
+                    position: [-2, -2, 0]
+                },
+                {
+                    name: "Shark",
+                    type: "Stingray",
+                    position: [-2, 2, 0]
                 }
             ]
             const app = new Aquarium({
                 nodes
             });
-            window.app= app;
+            window.app=app;
         })
     </script>
 </body>

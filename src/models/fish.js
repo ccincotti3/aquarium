@@ -1,6 +1,6 @@
-import Object from "./object.js"
+import Species from "./species.js"
 
-export default class Fish extends Object {
+export default class Fish extends Species {
     constructor(pos, name) {
         super()
         this.modelName = 'fish.glb'

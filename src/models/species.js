@@ -1,11 +1,11 @@
-import { GLTFLoader } from '../../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
-import * as THREE from '../../node_modules/three/build/three.module.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import * as THREE from 'three/build/three.module';
 
-const loader = new GLTFLoader().setPath('../../models/')
+const loader = new GLTFLoader().setPath('../static/models/')
 
 export default class Species {
     constructor() {
-        this.rotationThreshold = 0.01
+        this.rotationThreshold = 0.0
         this.rotationTurnFactor = 0.01
         this.loader = loader
         this.modelName = undefined
@@ -126,8 +126,6 @@ export default class Species {
         if(!this.modelName) {
             throw new Error("Please set a file name to load the 3D model")
         }
-
         this.loader.load(this.modelName, (gltf) => cb(gltf, this), undefined, errCb)
-        // this.loader.load(this.modelFileName, cb, undefined, errCb)
     }
 }

@@ -1,9 +1,26 @@
 {
+  "name": "3d-aquarium",
+  "description": "A Three JS Aquarium",
+  "license": "MIT",
+  "author": "Carmen Cincotti",
+  "repository": {
+    "type": "git",
+    "url": "git+git@github.com:ccincotti3/aquarium.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ccincotti3/aquarium/issues"
+  },
+  "version": "1.0.0",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "http-server"
+    "clean": "rm -rf dist",
+    "dev": "yarn clean && parcel index.html static/**/*",
+    "build": "yarn clean && parcel build index.html"
   },
   "dependencies": {
-    "http-server": "^0.12.3",
     "three": "^0.119.1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
   }
 }
