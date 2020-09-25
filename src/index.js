@@ -6,6 +6,8 @@ import Shark from './models/shark.js';
 import Stingray from './models/stingray.js';
 import { lightShader, vertexShader } from "./shaders.js"
 
+const spritePath = require("../static/assets/sprite.png")
+
 class Aquarium {
     constructor(props) {
         this.container = document.createElement('div')
@@ -130,6 +132,10 @@ class Aquarium {
                 if (o.isMesh) { 
                     o.castShadow = true
                     o.name = object.name
+                    if(object.color) {
+                        const mesh = new THREE.MeshStandardMaterial({color: object.color});
+                        o.material = mesh
+                    }
                 }
             });
             object.mesh = gltf.scene
@@ -147,7 +153,7 @@ class Aquarium {
         this.nodes.forEach(n => {
             switch (n.type) {
                 case "Goldfish":
-                    return new Fish({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    return new Fish({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name, n.color).load(loadCallback, errorCallback);
                 case "Shark":
                     return new Shark({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
                 case "Stingray":
@@ -176,7 +182,7 @@ class Aquarium {
         this.scene.add(pGroup)
 
         const tL = new THREE.TextureLoader()
-        const sprite = tL.load("static/assets/sprite.png");
+        const sprite = tL.load(spritePath);
         for (let i = 0; i < 1400; i++) {
             var vertex = new THREE.Vector3();
             vertex.x = 4000 * Math.random() - 2000;

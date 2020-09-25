@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import * as THREE from 'three/build/three.module';
 
-const loader = new GLTFLoader().setPath('../static/models/')
+const loader = new GLTFLoader().setPath('')
 
 export default class Species {
     constructor() {
@@ -9,6 +9,7 @@ export default class Species {
         this.rotationTurnFactor = 0.01
         this.loader = loader
         this.modelName = undefined
+        this.color = undefined;
         this.position = {
             x: 0,
             y: 0,
@@ -50,9 +51,6 @@ export default class Species {
             Object.keys(vectorToRotate).forEach(k => {
                 max = vectorToRotate[max] > vectorToRotate[k] ? max : k
             })
-            // if(this.name === "Shark") {
-            //     console.log({ vectorToRotate, max})
-            // }
 
             const directionToRotationAxis = {
                 'x': 'y',

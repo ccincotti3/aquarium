@@ -1,9 +1,10 @@
 import Species from "./species.js"
 
+const modelPath = require("../../static/models/shark.glb")
 export default class Shark extends Species {
     constructor(pos, name) {
         super()
-        this.modelName = 'shark.glb'
+        this.modelName = modelPath
         this.name = name || 'Shark'
         this.position = {
             x: pos.x,
