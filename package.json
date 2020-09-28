@@ -19,6 +19,7 @@
     "clean": "rm -rf dist && rm -rf .cache",
     "copy-static": "mkdir -p dist/ && cp -r static dist/static/",
     "dev": "yarn clean && parcel index.html static/**/*",
+    "build:dev": "yarn clean && yarn copy-static && microbundle watch",
     "build": "yarn clean && yarn copy-static && microbundle build"
   },
   "dependencies": {

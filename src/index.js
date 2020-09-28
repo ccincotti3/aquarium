@@ -28,6 +28,7 @@ class Aquarium {
 
         this.debug = props.debug
         this.nodes = props.nodes
+        this.onClick = props.onClick
 
         this.init()
     }
@@ -140,6 +141,7 @@ class Aquarium {
             });
             object.mesh = gltf.scene
 
+
             box.name = object.name
             box.visible = false;
             object.mesh.add( box );
@@ -149,17 +151,19 @@ class Aquarium {
         }
         
         const errorCallback = (e) => console.log(e)
-
         this.nodes.forEach(n => {
+            const initParams = [
+                {x: n.position[0], y: n.position[1], z: n.position[2]}, n.name, n.color, n.metadata
+            ]
             switch (n.type) {
                 case "Goldfish":
-                    return new Fish({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name, n.color).load(loadCallback, errorCallback);
+                    return new Fish(...initParams).load(loadCallback, errorCallback);
                 case "Shark":
-                    return new Shark({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    return new Shark(...initParams).load(loadCallback, errorCallback);
                 case "Stingray":
-                    return new Stingray({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    return new Stingray(...initParams).load(loadCallback, errorCallback);
                 case "Marlin":
-                    return new Marlin({x: n.position[0], y: n.position[1], z: n.position[2]}, n.name).load(loadCallback, errorCallback);
+                    return new Marlin(...initParams).load(loadCallback, errorCallback);
                 default:
                     break;
             }
@@ -216,24 +220,43 @@ class Aquarium {
             event.preventDefault();
 
             // (-1 to +1) for both components
-            this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+            const rect = this.renderer.domElement.getBoundingClientRect();
+            this.mouse.x = ( ( event.clientX - rect.left ) / rect.width ) * 2 - 1;
+            this.mouse.y = - ( ( event.clientY - rect.top ) / rect.height ) * 2 + 1;
+            // this.mouse.x = ( event.offsetX / this.renderer.domElement.width ) * 2 - 1;
+            // this.mouse.y = -( event.offsetY / this.renderer.domElement.height ) * 2 + 1;
 
             this.raycaster.setFromCamera( this.mouse, this.camera );
+        
+
             const meshes = this.fisheys.map(m => m.mesh)
             const intersects = this.raycaster.intersectObjects( meshes, true );
+            const bodyElement = document.querySelector('body');
             if(intersects.length) {
                 const fish = this.fisheys.find(f => f.name === intersects[0].object.name);
+                bodyElement.style.cursor = "pointer"
                 return this.selectedFish = fish
             }
+
+            bodyElement.style.cursor = "unset"
             return this.selectedFish = null
+    }
+
+    onMouseDown = ( event, cb ) => {
+        event.preventDefault();
+
+        if(event.target instanceof HTMLCanvasElement === false) {
+            return null;
+        }
+        cb(this.selectedFish)
     }
 
     handleSelectedFish() {
         const domEl = document.getElementById("selected")
+        this.fisheys.forEach(f => f.boxHelper.visible = false)
         if(!this.selectedFish) {
             domEl.innerHTML = ''
-            return this.fisheys.forEach(f => f.boxHelper.visible = false)
+            return null
         }
         domEl.innerHTML = this.selectedFish.name 
 
@@ -245,6 +268,7 @@ class Aquarium {
         this.mouse = new THREE.Vector2();
        
         window.addEventListener( 'mousemove', this.onMouseMove, false );
+        window.addEventListener( 'mousedown', (e) => this.onMouseDown(e, this.onClick), false );
     }
 }
 

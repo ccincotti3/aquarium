@@ -4,17 +4,14 @@ import * as THREE from 'three/build/three.module';
 const loader = new GLTFLoader().setPath('')
 
 export default class Species {
-    constructor() {
+    constructor(pos, name, color, metadata) {
         this.rotationThreshold = 0.0
         this.rotationTurnFactor = 0.01
         this.loader = loader
-        this.modelName = undefined
-        this.color = undefined;
-        this.position = {
-            x: 0,
-            y: 0,
-            z: 0,
-        }
+        this.modelName = name;
+        this.color = color;
+        this.metadata = metadata;
+        this.position = pos || { x: 0, y: 0, z: 0, }
         this.direction = { // 1 for positive, -1 for negative
             x: 0,
             y: 0,
@@ -59,15 +56,11 @@ export default class Species {
             }
             if (magnitude > this.lastMagnitude) {
                 const dir = directionToRotationAxis[max]
-                const turnVel = .001 * vectorToRotate[max]
+                const turnVel = .0006 * vectorToRotate[max]
                 this.mesh.rotation.x += this.mesh.rotation.x < 0 ? 0.001 : -0.001
                 this.mesh.rotation.y += this.mesh.rotation.y < 0 ? 0.001 : -0.001
                 this.mesh.rotation.z += this.mesh.rotation.z < 0 ? 0.001 : -0.001
                 this.mesh.rotation[dir] +=  dir === "x" && this.mesh.position.y < 0 ? -turnVel : turnVel
-            if(this.name === "Fish 3") {
-                console.log(dir === "x" && this.mesh.position.y < 0)
-            }
-
             }
 
             this.lastMagnitude = magnitude
