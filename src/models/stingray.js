@@ -1,6 +1,6 @@
 import Species from "./species.js"
 
-const modelPath = require("../../static/models/stingray.glb")
+const modelPath = require("3d-aquarium/static/models/stingray.glb")
 export default class Stingray extends Species {
     constructor(pos, name, color, metadata) {
         super()

@@ -65,13 +65,6 @@ export default class Species {
 
             this.lastMagnitude = magnitude
 
-            // if (this.mesh.rotation.y > 2 * Math.PI)  {
-            //     this.mesh.rotation.y = 0
-            // }
-            // if (this.mesh.rotation.y < -2 * Math.PI)  {
-            //     this.mesh.rotation.y = 0
-            // }
-
             if (this.mesh.rotation.x < -Math.PI / 2)  {
                 this.mesh.rotation.x = -Math.PI / 2
             }
@@ -80,37 +73,10 @@ export default class Species {
                 this.mesh.rotation.x = Math.PI / 2
             }
 
-
-
-            // let rotationY = 0
-            // let rotationZ = 0
-
-            // const direction = new THREE.Vector3(0, 0, 0).applyQuaternion( this.mesh.quaternion );
-
-        
-            // const xDirectionFactor = direction.x * vector.x > 0 ?  1 : 0.7;
-            // const yDirectionFactor = direction.y * vector.y > 0 ? 1 : 0.7;
-
-            // const rotationRandom = Math.random()
-            // if (this.rotationThreshold > rotationRandom) {
-            //     const influencingVector = Math.abs(vector.x) > Math.abs(vector.z) ? vector.x : vector.z
-            //         rotationY = influencingVector * this.rotationTurnFactor * xDirectionFactor
-            //         rotationZ = vector.y * this.rotationTurnFactor * yDirectionFactor
-            // }
-
-            // this.mesh.rotation.y += rotationY // Turn around
-            // this.mesh.rotation.z += rotationZ // Turn around
-            // this.mesh.rotation.x += rotationY // Turn around
-
-
-
             this.mesh.translateX(this.velocity * this.direction.x)
             this.mesh.translateY(this.velocity * this.direction.y)
             this.mesh.translateZ(this.velocity * this.direction.z)
-            // // console.log(this.mesh.position)
-            // // console.log(vector)
-            // // console.log(worldCoords)
-            // // console.log(this.mesh.getWorldPosition())
+ 
         }
 
     load(cb, errCb) {

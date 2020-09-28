@@ -1,5 +1,5 @@
 {
-  "name": "@mr_cincotti/3d-aquarium",
+  "name": "3d-aquarium",
   "source": "src/index.js",
   "main": "dist/index.js",
   "module": "dist/index.module.js",
@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/ccincotti3/aquarium/issues"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "clean": "rm -rf dist && rm -rf .cache",
     "copy-static": "mkdir -p dist/ && cp -r static dist/static/",

@@ -1,6 +1,6 @@
 import Species from "./species.js"
 
-const modelPath = require("../../static/models/shark.glb")
+const modelPath = require("3d-aquarium/static/models/shark.glb")
 export default class Shark extends Species {
     constructor(pos, name, color, metadata) {
         super()

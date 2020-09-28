@@ -1,6 +1,6 @@
 import Species from "./species.js"
 
-const modelPath = require("../../static/models/marlin.glb")
+const modelPath = require("3d-aquarium/static/models/marlin.glb")
 export default class Marlin extends Species {
     constructor(pos, name, color, metadata) {
         super()
