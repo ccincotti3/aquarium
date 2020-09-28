@@ -9,7 +9,7 @@
   "author": "Carmen Cincotti",
   "repository": {
     "type": "git",
-    "url": "git+git@github.com:ccincotti3/aquarium.git"
+    "url": "git+ssh://git@github.com/ccincotti3/aquarium.git"
   },
   "bugs": {
     "url": "https://github.com/ccincotti3/aquarium/issues"
@@ -28,5 +28,6 @@
   "devDependencies": {
     "microbundle": "^0.12.3",
     "parcel-bundler": "^1.12.4"
-  }
+  },
+  "homepage": "https://github.com/ccincotti3/aquarium#readme"
 }
