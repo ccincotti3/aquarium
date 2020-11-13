@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/assets/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="stats">
+        <p>Selected: <span id="selected"></span></p>
+    </div>
+    <script type="module" src=".build"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const nodes = [
+                {
+                    name: "Fish 1",
+                    type: "Goldfish",
+                    position: [0, 0, 0]
+                },
+                {
+                    name: "Shark",
+                    type: "Shark",
+                    position: [2, 2, 0]
+                },
+                {
+                    name: "Marlin",
+                    type: "Marlin",
+                    position: [-2, -2, 0]
+                },
+                {
+                    name: "Stingray",
+                    type: "Stingray",
+                    position: [-2, 2, 0]
+                }
+            ]
+            const app = new Aquarium({
+                nodes
+            });
+            window.app=app;
+        })
+    </script>
+</body>
+</html>
